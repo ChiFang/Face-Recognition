@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os
 import numpy as np
 import cv2
 import cv2.cv as cv
@@ -9,25 +10,32 @@ from common import clock, draw_str
 import facedetect as fd
 
 help_message = '''
-USAGE: facedetect.py [--cascade <cascade_fn>] [--nested-cascade <cascade_fn>] [<video_source>]
+USAGE: CreatSample.py [--cascade <cascade_fn>] [--nested-cascade <cascade_fn>] [--outdir <OutDir>] [--sample-num <SampleNum>]
 '''
-
-
-out_dir = "./sample"
 
 CntLimit = 10
 CntSample = 0
 
 if __name__ == '__main__':
     import sys, getopt
-    print help_message
+    print (help_message)
 
-    args, video_src = getopt.getopt(sys.argv[1:], '', ['cascade=', 'nested-cascade='])
+    args, video_src = getopt.getopt(sys.argv[1:], '', ['cascade=', 'nested-cascade=','outdir=','sample-num='])
     try: video_src = video_src[0]
     except: video_src = 0
     args = dict(args)
     cascade_fn = args.get('--cascade', "haarcascades/haarcascade_frontalface_alt.xml")
     nested_fn  = args.get('--nested-cascade', "haarcascades/haarcascade_eye.xml")
+    out_dir = args.get('--outdir', "./sample")
+    CntLimit = args.get('--sample-num', 10)
+    CntLimit = int(CntLimit) # args.get only return string, so we need to covert it to digit
+    
+    print ("SampleNum: " + str(CntLimit))
+    print ("out dir: " + out_dir)
+    
+    if not os.path.exists(out_dir):
+        print ("create out_dir")
+        os.makedirs(out_dir)
 
     cascade = cv2.CascadeClassifier(cascade_fn)
     nested = cv2.CascadeClassifier(nested_fn)
@@ -51,7 +59,7 @@ if __name__ == '__main__':
             fd.draw_rects(vis_roi, subrects, (255, 0, 0))
             #print len(subrects)
             if len(subrects) == 2:
-                print "imwrite Sample " + str(CntSample)
+                print ("imwrite Sample " + str(CntSample))
                 dir = out_dir + "/sample_" + str(CntSample) + ".png"
                 cv2.imwrite(dir, roi)
                 CntSample = CntSample+1
@@ -62,8 +70,10 @@ if __name__ == '__main__':
         cv2.imshow('facedetect', vis)
         
         if CntSample >= CntLimit:
-            print "finish"
+            print ("finish")
             break
+        
+        
         
         if 0xFF & cv2.waitKey(5) == 27:
             break

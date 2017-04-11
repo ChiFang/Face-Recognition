@@ -9,27 +9,34 @@ import facedetect as fd
 
 import Train_Common as tc
 
-reconizer = cv2.createLBPHFaceRecognizer()
-reconizer.load('model_LBPH_test.yml')
+help_message = '''
+USAGE: facedRec_LBP.py [--cascade <cascade_fn>] [--nested-cascade <cascade_fn>]  [--model-name <ModelName>] [--label-name <LabelName>]
+'''
+
+
 
 out = cv2.VideoWriter('output.avi', -1, 20.0, (640,480))
 
 if __name__ == '__main__':
     import sys, getopt
 
-    args, video_src = getopt.getopt(sys.argv[1:], '', ['cascade=', 'nested-cascade='])
+    args, video_src = getopt.getopt(sys.argv[1:], '', ['cascade=', 'nested-cascade=', 'model-name=', 'label-name='])
     try: video_src = video_src[0]
     except: video_src = 0
     args = dict(args)
     cascade_fn = args.get('--cascade', "haarcascades/haarcascade_frontalface_alt.xml")
     nested_fn  = args.get('--nested-cascade', "haarcascades/haarcascade_eye.xml")
+    ModelName = args.get('--model-name', "Model_default.yml")
+    LabelName = args.get('--label-name', "Label_default.txt")
 
     cascade = cv2.CascadeClassifier(cascade_fn)
     nested = cv2.CascadeClassifier(nested_fn)
+    
+    reconizer = cv2.createLBPHFaceRecognizer()
+    reconizer.load(ModelName)
 
     cam = create_capture(video_src, fallback='synth:bg=../cpp/lena.jpg:noise=0.05')
-    
-    Name, Labels = tc.Read_List_Label("Label_test.txt")
+    Name, Labels = tc.Read_List_Label(LabelName)
 
     while True:
         ret, img = cam.read()

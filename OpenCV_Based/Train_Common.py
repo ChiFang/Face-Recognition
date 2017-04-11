@@ -5,6 +5,10 @@ import cv2, os
 import numpy as np
 from PIL import Image
 
+default_label_name = "Label_default.txt"
+default_model_name = "Model_default.yml"
+
+
 def get_images_and_labels(path):
     # Append all the absolute image paths in a list image_paths
     # We will not read the image with the .sad extension in the training set
@@ -122,19 +126,19 @@ def Gen_List_All_Sample_Image(path, format, FileName="sample.csv"):
     LabelCnt = 0
     fo=open(FileName, 'w')
 
-    print str(len(onlydir)) + " folder"
+    #print str(len(onlydir)) + " folder"
     #print onlydir
 
     for folder in onlydir:
-        print folder
+        #print folder
         folder_path_tmp = os.path.join(path, folder)
         #print folder_path_tmp
         image_paths = [ f for f in os.listdir(folder_path_tmp) if f.endswith(format) ]
-        print str(len(image_paths)) + " image"
+        #print str(len(image_paths)) + " image"
         #print image_paths
         for image in image_paths:
             image_path_tmp = os.path.join(folder_path_tmp, image)
-            print image_path_tmp
+            #print image_path_tmp
             fo.write(image_path_tmp)
             fo.write(",")
             fo.write(str(LabelCnt)+"\n")
@@ -142,7 +146,7 @@ def Gen_List_All_Sample_Image(path, format, FileName="sample.csv"):
             
     fo.close()
     
-def Gen_List_Label(path, FileName="Label_test.txt"):
+def Gen_List_Label(path, FileName = default_label_name):
     onlydir = [ f for f in os.listdir(path) if os.path.isdir(os.path.join(path,f)) ]
     LabelCnt = 0
     fo=open(FileName, 'w')
@@ -154,7 +158,7 @@ def Gen_List_Label(path, FileName="Label_test.txt"):
         LabelCnt = LabelCnt+1     
     fo.close()
     
-def Read_List_Label(FileName="Label_test.txt"):
+def Read_List_Label(FileName = default_label_name):
     fo=open(FileName, 'r')
     
     # images will contains face images
@@ -173,7 +177,7 @@ def Read_List_Label(FileName="Label_test.txt"):
 
 def TrainModel(model, img, label, OutName=None):
     if OutName == None:
-        OutName = 'model_default.yml'
+        OutName = default_model_name
         
     # Learn the model. Remember our function returns Python lists,
     # so we use np.asarray to turn them into NumPy lists to make

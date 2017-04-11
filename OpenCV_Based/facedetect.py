@@ -10,13 +10,6 @@ help_message = '''
 USAGE: facedetect.py [--cascade <cascade_fn>] [--nested-cascade <cascade_fn>] [<video_source>]
 '''
 
-model_img_width = 200
-model_img_height = 280
-reconizer = cv2.createEigenFaceRecognizer()
-reconizer.load('model.yml')
-
-offset_test = 20
-
 def detect(img, cascade):
     rects = cascade.detectMultiScale(img, scaleFactor=1.3, minNeighbors=4, minSize=(30, 30), flags = cv.CV_HAAR_SCALE_IMAGE)
     if len(rects) == 0:
@@ -37,6 +30,13 @@ def draw_rects_1(img, rects, color):
 if __name__ == '__main__':
     import sys, getopt
     print help_message
+    
+    model_img_width = 200
+    model_img_height = 280
+    reconizer = cv2.createEigenFaceRecognizer()
+    reconizer.load('model.yml')
+
+    offset_test = 20
 
     args, video_src = getopt.getopt(sys.argv[1:], '', ['cascade=', 'nested-cascade='])
     try: video_src = video_src[0]

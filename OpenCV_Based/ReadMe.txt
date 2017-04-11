@@ -28,6 +28,13 @@ OpenCV提供3種Face-Recognition:
 流程如下:
 1. 使用 CreatSample.py 抓取要辨識的人建檔，一次一個，每人抓10張
 
+USAGE: CreatSample.py [--cascade <cascade_fn>] [--nested-cascade <cascade_fn>] [--outdir <OutDir>] [--sample-num <SampleNum>]
+
+cascade: 人臉偵測模型 不輸入會用預設路徑中的檔案
+nested-cascade: 人眼偵測模型 不輸入會用預設路徑中的檔案
+outdir: 人臉圖片擷取後存放路徑 不輸入會在當前目錄名為sample的資料夾底下存放
+sample-num: 人臉圖片擷取數量 不輸入會預設擷取10張
+
 2. 將產生的圖片所屬資料夾(目前內定是sample)移到你要的資料夾下並改成你要的名子
 
 ex:
@@ -38,8 +45,19 @@ FaceDataFolder>>>person 0 (10 smple image)
                  .
                  person n (10 smple image)
                  
-3. 使用 Train_Recognizer_LBP.py 指定 FaceDataFolder(ex: FaceRecData_LBPH_Test) 和輸出檔案名稱 (ex: model_LBPH_test.yml)下去訓練
+3. 使用 Train_Recognizer_LBP.py 下去訓練
 
+USAGE: Train_Recognizer_LBP.py [--path <Path>]  [--model-name <ModelName>] [--label-name <LabelName>]
+
+path: FaceDataFolder 路徑 不輸入則預設為 FaceRecData_LBPH_Test
+model-name: 輸出模型檔名 不輸入則預設為 Model_default.yml
+label-name: label 清單名稱 不輸入則預設為 Label_default.txt
 
 4. 使用 facedRec_LBP.py 來做人臉偵測並且將人臉做辨識，分數越低表示越像
-這裡必須指定 label檔和模型檔 (ex: Label_test.txt and model_LBPH_test.yml)
+
+USAGE: facedRec_LBP.py [--cascade <cascade_fn>] [--nested-cascade <cascade_fn>]  [--model-name <ModelName>] [--label-name <LabelName>]
+
+cascade: 人臉偵測模型 不輸入會用預設路徑中的檔案
+nested-cascade: 人眼偵測模型 不輸入會用預設路徑中的檔案
+model-name: 模型檔名 不輸入則預設為 Model_default.yml
+label-name: label 清單檔 不輸入則預設為 Label_default.txt
